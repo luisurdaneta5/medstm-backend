@@ -3,7 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const { sequelize } = require("./models/db");
-const { logger } = require("./helpers");
+
 const fileUpload = require("express-fileupload");
 require("./models/asociations");
 require("dotenv").config();
@@ -13,6 +13,7 @@ dotenv.config();
 const app = express();
 
 //Middlewares
+app.use(cors());
 app.use(
 	bodyParser.urlencoded({
 		limit: "50mb",
@@ -21,10 +22,8 @@ app.use(
 	})
 );
 app.use(bodyParser.json());
-
 app.use(express.static("public"));
 app.use(express.json());
-app.use(cors());
 app.use(
 	fileUpload({
 		useTempFiles: true,
@@ -33,9 +32,11 @@ app.use(
 );
 
 //Routes
-// app.use("/api/auth", require("./routes/auth"));
+app.use("/api/auth", require("./routes/auth"));
 app.use("/api/user", require("./routes/users"));
 app.use("/api", require("./routes/ui"));
+app.use("/api/blog", require("./routes/blog"));
+app.use("/api/specialities", require("./routes/specialities"));
 
 app.listen(process.env.PORT, () => {
 	//Servidor

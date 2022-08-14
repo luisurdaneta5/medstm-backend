@@ -1,7 +1,5 @@
 const db = require("./db");
 const { DataTypes } = require("sequelize");
-const Referral = require("./referrals");
-const Document = require("./documents");
 
 const User = db.sequelize.define(
 	"Users",
@@ -46,8 +44,8 @@ const User = db.sequelize.define(
 		plan: {
 			type: DataTypes.STRING(255),
 		},
-	},
-	{ timestamps: false }
+	}
+	// { timestamps: false }
 );
 
 module.exports = User;

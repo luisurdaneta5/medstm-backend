@@ -5,7 +5,13 @@ const {
 	createUser,
 	getUsersInactive,
 	getUserInactive,
+	setApproveUser,
+	setRejectUser,
+	getUsers,
+	ChangePassword,
+	changeAvatar,
 } = require("../controllers/users");
+const { validarJWT } = require("../middlewares/validarjwt");
 
 const router = express.Router();
 
@@ -24,8 +30,18 @@ router.post(
 	createUser
 );
 
-router.get("/requests/inactive", getUsersInactive);
+router.get("/requests/inactive", validarJWT, getUsersInactive);
 
-router.get("/request/inactive", getUserInactive);
+router.get("/request/inactive", validarJWT, getUserInactive);
+
+router.put("/approved", validarJWT, setApproveUser);
+
+router.delete("/rejected/:id", validarJWT, setRejectUser);
+
+router.get("/all", validarJWT, getUsers);
+
+router.post("/change-password", validarJWT, ChangePassword);
+
+router.post("/upload/avatar", validarJWT, changeAvatar);
 
 module.exports = router;

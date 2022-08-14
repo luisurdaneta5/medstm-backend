@@ -1,7 +1,30 @@
 const express = require("express");
-const { getCountries } = require("../controllers/ui");
+const {
+	getCountries,
+	getCountUsers,
+	getRequests,
+	getNotices,
+	getSpecialities,
+	getPlansFree,
+	getPlansPremiun,
+	getPlansVip,
+} = require("../controllers/ui");
 const router = express.Router();
 
 router.get("/countries_available", getCountries);
+
+router.get("/users", getCountUsers);
+
+router.get("/requests", getRequests);
+
+router.get("/notices", getNotices);
+
+router.get("/specialities", getSpecialities);
+
+router.get("/plans/free", getPlansFree);
+
+router.get("/plans/premiuns", getPlansPremiun);
+
+router.get("/plans/vips", getPlansVip);
 
 module.exports = router;
