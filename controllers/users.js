@@ -275,27 +275,57 @@ const changeAvatar = async (req, res = response) => {
 	const { uid, id } = req.body;
 	const { image } = req.files;
 
+	const name_short = image.name.split(".");
+	const extension = name_short[name_short.length - 1];
+
+	const extensionsValids = ["png", "jpg", "jpeg", "gif"];
+
+	if (!extensionsValids.includes(extension)) {
+		res.status(400).json({
+			message: "Imagen no válida",
+		});
+	}
+
+	const temporalName = uuidv4() + "." + extension;
+
 	if (id) {
 		try {
-			const avatar = await Document.findOne({
-				where: {
-					id,
-				},
-			});
-
 			const uploadPath = path.join(
 				__dirname,
 				`../uploads/images/avatars/`,
-				image.name
+				temporalName
 			);
 
-			const data = {
-				...avatar,
-				url:
-					process.env.URL_FILE +
-					`/uploads/images/avatars/` +
-					image.name,
-			};
+			// const data = {
+			// 	url:
+			// 		process.env.URL_FILE +
+			// 		`/uploads/images/avatars/` +
+			// 		image.name,
+			// };
+
+			image.mv(uploadPath, (err) => {
+				if (err) {
+					console.log(err);
+				}
+
+				Document.findOne(
+					{
+						url:
+							process.env.URL_FILE +
+							`/uploads/images/avatars/` +
+							temporalName,
+					},
+					{
+						where: {
+							id,
+						},
+					}
+				);
+
+				res.status(200).json({
+					ok: true,
+				});
+			});
 
 			res.status(200).json({
 				ok: true,
@@ -308,41 +338,43 @@ const changeAvatar = async (req, res = response) => {
 				message: "Error al cambiar la imagen de perfil",
 			});
 		}
-	}
+	} else {
+		try {
+			const uploadPath = path.join(
+				__dirname,
+				`../uploads/images/avatars/`,
+				temporalName
+			);
 
-	try {
-		const uploadPath = path.join(
-			__dirname,
-			`../uploads/images/avatars/`,
-			image.name
-		);
+			const data = {
+				id: uuidv4(),
+				userId: uid,
+				type: 6,
+				url:
+					process.env.URL_FILE +
+					`/uploads/images/avatars/` +
+					temporalName,
+			};
 
-		const data = {
-			id: uuidv4(),
-			userId: uid,
-			type: 6,
-			url: process.env.URL_FILE + `/uploads/images/avatars/` + image.name,
-		};
+			image.mv(uploadPath, (err) => {
+				if (err) {
+					console.log(err);
+				}
 
-		image.mv(uploadPath, (err) => {
-			if (err) {
-				console.log(err);
-			}
+				const document = new Document(data);
+				document.save();
 
-			const document = new Document(data);
-			document.save();
-
-			res.status(200).json({
-				ok: true,
-				document,
+				res.status(200).json({
+					ok: true,
+				});
 			});
-		});
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			ok: false,
-			message: "Error al cambiar la imagen",
-		});
+		} catch (error) {
+			console.log(error);
+			res.status(500).json({
+				ok: false,
+				message: "Error al cambiar la imagen",
+			});
+		}
 	}
 };
 
