@@ -23,7 +23,7 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("public"));
 app.use(express.json());
 app.use(
 	fileUpload({
