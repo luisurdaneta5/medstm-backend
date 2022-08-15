@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("./db");
 
-const Speciality = db.sequelize.define("Specialities", {
+const Speciality = db.sequelize.define("specialities", {
 	id: {
 		type: DataTypes.STRING(255),
 		primaryKey: true,

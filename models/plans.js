@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const db = require("./db");
 
 const Plan = db.sequelize.define(
-	"Plans",
+	"plans",
 	{
 		id: {
 			type: DataTypes.STRING(255),

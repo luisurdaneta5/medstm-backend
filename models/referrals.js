@@ -3,7 +3,7 @@ const User = require("./users");
 const db = require("./db");
 
 const Referral = db.sequelize.define(
-	"Referrals",
+	"referrals",
 	{
 		id: {
 			type: DataTypes.STRING(255),
