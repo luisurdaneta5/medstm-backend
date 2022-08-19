@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const { sequelize } = require("./models/db");
+const path = require("path");
 
 const fileUpload = require("express-fileupload");
 require("./models/asociations");
@@ -22,8 +23,33 @@ app.use(
 	})
 );
 app.use(bodyParser.json());
+
 app.use(express.static("public"));
-app.use("/uploads", express.static(__dirname + "uploads"));
+
+//acceso a documentos
+app.use(
+	"/uploads/documents",
+	express.static(path.join(__dirname, "/uploads/documents"))
+);
+
+//acceso a avatars
+app.use(
+	"/uploads/avatars",
+	express.static(path.join(__dirname, "/uploads/images/avatars"))
+);
+
+//acceso a blogs
+app.use(
+	"/uploads/blog",
+	express.static(path.join(__dirname, "/uploads/images/blog"))
+);
+
+//acceso a specialities
+app.use(
+	"/uploads/specialities",
+	express.static(path.join(__dirname, "/uploads/images/specialities"))
+);
+
 app.use(express.json());
 app.use(
 	fileUpload({

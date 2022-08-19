@@ -7,17 +7,22 @@ const CreateNotice = async (req, res = response) => {
 	const { body } = req;
 	const image = req.files.image;
 
+	const name_short = image.name.split(".");
+	const extension = name_short[name_short.length - 1];
+
+	const temporalName = uuidv4() + "." + extension;
+
 	try {
 		const uploadPath = path.join(
 			__dirname,
 			`../uploads/images/blog/`,
-			image.name
+			temporalName
 		);
 
 		const data = {
 			...body,
 			id: uuidv4(),
-			image: process.env.URL_FILE + `/uploads/images/blog/` + image.name,
+			image: process.env.URL_FILE + `/uploads/blog/` + temporalName,
 		};
 
 		image.mv(uploadPath, (err) => {
@@ -93,16 +98,21 @@ const UpdateNotice = async (req, res = response) => {
 
 		if (req.files !== null && notice) {
 			const image = req.files.image;
+
+			const name_short = image.name.split(".");
+			const extension = name_short[name_short.length - 1];
+
+			const temporalName = uuidv4() + "." + extension;
+
 			const uploadPath = path.join(
 				__dirname,
 				`../uploads/images/blog/`,
-				image.name
+				temporalName
 			);
 
 			const data = {
 				...body,
-				image:
-					process.env.URL_FILE + `/uploads/images/blog/` + image.name,
+				image: process.env.URL_FILE + `/uploads/blog/` + temporalName,
 			};
 
 			image.mv(uploadPath, (err) => {

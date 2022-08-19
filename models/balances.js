@@ -1,18 +1,17 @@
 const { DataTypes } = require("sequelize");
-const User = require("./users");
 const db = require("./db");
 
-const Referral = db.sequelize.define("referrals", {
+const Balance = db.sequelize.define("balances", {
 	id: {
 		type: DataTypes.STRING(255),
 		primaryKey: true,
 	},
-	referId: {
-		type: DataTypes.STRING(255),
-	},
 	userId: {
 		type: DataTypes.STRING(255),
 	},
+	balance: {
+		type: DataTypes.FLOAT,
+	},
 });
 
-module.exports = Referral;
+module.exports = Balance;

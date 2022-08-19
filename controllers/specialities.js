@@ -3,25 +3,28 @@ const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const Speciality = require("../models/specialities");
 const Notice = require("../models/notices");
+const mySpecialities = require("../models/mySpecialities");
 
 const CreateSpeciality = async (req, res = response) => {
 	const { body } = req;
 	const image = req.files.img;
 
+	const name_short = image.name.split(".");
+	const extension = name_short[name_short.length - 1];
+
+	const temporalName = uuidv4() + "." + extension;
+
 	try {
 		const uploadPath = path.join(
 			__dirname,
 			`../uploads/images/specialities/`,
-			image.name
+			temporalName
 		);
 
 		const data = {
 			...body,
 			id: uuidv4(),
-			img:
-				process.env.URL_FILE +
-				`/uploads/images/specialities/` +
-				image.name,
+			img: process.env.URL_FILE + `/uploads/specialities` + temporalName,
 		};
 
 		image.mv(uploadPath, (err) => {
@@ -93,21 +96,24 @@ const UpdateSpeciality = async (req, res = response) => {
 		});
 
 		if (req.files !== null && speciality) {
-			console.log("paso por subir imagen");
 			const image = req.files.img;
+			const name_short = image.name.split(".");
+			const extension = name_short[name_short.length - 1];
+
+			const temporalName = uuidv4() + "." + extension;
 
 			const uploadPath = path.join(
 				__dirname,
 				`../uploads/images/specialities/`,
-				image.name
+				temporalName
 			);
 
 			const data = {
 				...body,
 				img:
 					process.env.URL_FILE +
-					`/uploads/images/specialities/` +
-					image.name,
+					`/uploads/specialities` +
+					temporalName,
 			};
 
 			image.mv(uploadPath, (err) => {
@@ -158,10 +164,51 @@ const DeleteSpeciality = async (req, res = response) => {
 		});
 	}
 };
+
+const setSpecialityUser = async (req, res = response) => {
+	const { uid, speciality } = req.body;
+
+	try {
+		const data = {
+			id: uuidv4(),
+			userId: uid,
+			speciality: speciality,
+		};
+
+		const found = await mySpecialities.findOne({
+			where: {
+				userId: uid,
+				speciality: speciality,
+			},
+		});
+
+		if (found) {
+			res.status(500).json({
+				ok: false,
+				message: "Ya tiene agregada esta especialidad",
+			});
+		} else {
+			const specialityData = new mySpecialities(data);
+			specialityData.save();
+
+			res.status(200).json({
+				ok: true,
+				message: "Especialidad asignada correctamente",
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			message: "Error al asignar la especialidad",
+		});
+	}
+};
 module.exports = {
 	CreateSpeciality,
 	getSpecialities,
 	getSpeciality,
 	UpdateSpeciality,
 	DeleteSpeciality,
+	setSpecialityUser,
 };
