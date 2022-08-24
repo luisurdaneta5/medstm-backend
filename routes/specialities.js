@@ -1,4 +1,4 @@
-const exporess = require("express");
+const express = require("express");
 const {
 	CreateSpeciality,
 	getSpecialities,
@@ -8,7 +8,7 @@ const {
 	setSpecialityUser,
 } = require("../controllers/specialities");
 
-const router = exporess.Router();
+const router = express.Router();
 
 router.get("/get", getSpecialities);
 router.post("/create", CreateSpeciality);
