@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post(
 	"/create",
-	[check("address", "Ingrese una Direccion").not().isEmpty(), validateFields],
+
 	setAddress
 );
 

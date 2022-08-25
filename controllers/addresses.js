@@ -3,11 +3,11 @@ const { v4: uuidv4 } = require("uuid");
 const Address = require("../models/addresses");
 
 const setAddress = (req, res = response) => {
-	const { userId, address } = req.body;
+	const { uid, address } = req.body;
 
 	const data = {
 		id: uuidv4(),
-		userId: userId,
+		userId: uid,
 		address: address,
 	};
 
@@ -26,9 +26,6 @@ const setAddress = (req, res = response) => {
 			message: "Error al agrega la Direccion",
 		});
 	}
-
-	console.log("UserID:", userId);
-	console.log("Direccion:", address);
 };
 
 module.exports = {
