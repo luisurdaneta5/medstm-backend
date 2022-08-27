@@ -204,6 +204,33 @@ const setSpecialityUser = async (req, res = response) => {
 		});
 	}
 };
+
+const deleteSpecialityUser = async (req, res = response) => {
+	const { uid, id } = req.query;
+
+	try {
+		const specialityData = await mySpecialities.findOne({
+			where: {
+				userId: uid,
+				id,
+			},
+		});
+
+		specialityData.destroy();
+
+		res.status(200).json({
+			ok: true,
+			message: "Especialidad eliminada correctamente",
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			message: "Error al eliminar la especialidad",
+		});
+	}
+};
+
 module.exports = {
 	CreateSpeciality,
 	getSpecialities,
@@ -211,4 +238,5 @@ module.exports = {
 	UpdateSpeciality,
 	DeleteSpeciality,
 	setSpecialityUser,
+	deleteSpecialityUser,
 };

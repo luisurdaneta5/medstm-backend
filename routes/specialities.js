@@ -6,6 +6,7 @@ const {
 	UpdateSpeciality,
 	DeleteSpeciality,
 	setSpecialityUser,
+	deleteSpecialityUser,
 } = require("../controllers/specialities");
 
 const router = exporess.Router();
@@ -20,4 +21,7 @@ router.put("/update", UpdateSpeciality);
 router.delete("/delete", DeleteSpeciality);
 
 router.post("/setSpecialityUser", setSpecialityUser);
+
+router.delete("/deleteSpecialityUser", deleteSpecialityUser);
+
 module.exports = router;
