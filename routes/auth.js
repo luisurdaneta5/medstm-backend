@@ -11,8 +11,9 @@ router.post(
 	[
 		check("email", "Ingrese un Correo Electronico").not().isEmpty(),
 		check("email", "Ingrese un Correo Electronico valido").isEmail(),
+		validateFields,
 	],
-	validateFields,
+
 	setLogin
 );
 

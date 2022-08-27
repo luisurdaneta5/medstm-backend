@@ -64,6 +64,7 @@ app.use("/api/user", require("./routes/users"));
 app.use("/api", require("./routes/ui"));
 app.use("/api/blog", require("./routes/blog"));
 app.use("/api/specialities", require("./routes/specialities"));
+app.use("/api/address", require("./routes/addresses"));
 
 app.listen(process.env.PORT, () => {
 	//Servidor
