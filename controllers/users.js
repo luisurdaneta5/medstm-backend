@@ -458,7 +458,7 @@ const changeAvatar = async (req, res = response) => {
 	}
 };
 
-getUserforProfile = async (req, res = response) => {
+const getUserforProfile = async (req, res = response) => {
 	const { id } = req.query;
 	try {
 		const user = await User.findOne({

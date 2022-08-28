@@ -28,6 +28,58 @@ const setAddress = (req, res = response) => {
 	}
 };
 
+const getAddressUser = async (req, res = response) => {
+	const { uid } = req.query;
+
+	try {
+		const addresses = await Address.findAll({
+			where: {
+				userId: uid,
+			},
+			attributes: {
+				exclude: ["userId", "createdAt", "updatedAt"],
+			},
+		});
+
+		res.status(200).json({
+			ok: true,
+			addresses,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			message: "Error al obtener tus direcciones",
+		});
+	}
+};
+
+const deleteAddress = async (req, res = response) => {
+	const { id } = req.query;
+
+	try {
+		const address = await Address.findOne({
+			where: {
+				id,
+			},
+		});
+
+		address.destroy();
+
+		res.status(200).json({
+			ok: true,
+			message: "Direccion Eliminada",
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+		});
+	}
+};
+
 module.exports = {
 	setAddress,
+	getAddressUser,
+	deleteAddress,
 };
