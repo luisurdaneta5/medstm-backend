@@ -11,6 +11,7 @@ const {
 	ChangePassword,
 	changeAvatar,
 	getUserforProfile,
+	changeName,
 } = require("../controllers/users");
 const { validarJWT } = require("../middlewares/validarjwt");
 
@@ -46,5 +47,7 @@ router.post("/change-password", validarJWT, ChangePassword);
 router.post("/upload/avatar", validarJWT, changeAvatar);
 
 router.get("/profile", validarJWT, getUserforProfile);
+
+router.put("/profile/changeName", validarJWT, changeName);
 
 module.exports = router;

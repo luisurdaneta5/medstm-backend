@@ -559,6 +559,28 @@ const getUserforProfile = async (req, res = response) => {
 	}
 };
 
+const changeName = async (req, res = response) => {
+	const { id, name, lastname } = req.body;
+
+	try {
+		const user = await User.findOne({
+			where: {
+				id,
+			},
+		});
+
+		user.update({
+			name,
+			lastname,
+		});
+
+		res.status(200).json({
+			ok: true,
+			message: "Actualizacion exitosa",
+		});
+	} catch (error) {}
+};
+
 module.exports = {
 	createUser,
 	getUsersInactive,
@@ -569,4 +591,5 @@ module.exports = {
 	ChangePassword,
 	changeAvatar,
 	getUserforProfile,
+	changeName,
 };
