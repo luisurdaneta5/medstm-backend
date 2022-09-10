@@ -599,6 +599,47 @@ const changePhone = async (req, res = response) => {
 			ok: true,
 			message: "Actualizacion exitosa",
 		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			message: "Error al actualizar",
+		});
+	}
+};
+
+const changeEmail = async (req, res = response) => {
+	const { id, email } = req.body;
+
+	try {
+		const findEmail = User.findOne({
+			where: {
+				email,
+			},
+		});
+
+		if (findEmail) {
+			res.status(500).json({
+				ok: false,
+				message:
+					"Este correo ya esta registrado, porfavor intente con otro",
+			});
+		} else {
+			const user = await User.findOne({
+				where: {
+					id,
+				},
+			});
+
+			user.update({
+				email,
+			});
+
+			res.status(200).json({
+				ok: false,
+				message: "Actualizacion exitosa",
+			});
+		}
 	} catch (error) {}
 };
 module.exports = {
