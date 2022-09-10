@@ -637,7 +637,7 @@ const changeEmail = async (req, res = response) => {
 
 			res.status(200).json({
 				ok: false,
-				message: "Actualizacion exitosa",
+				message: "Actualizacion <exitosa>																																																																																																																																																																																																																																																																									</exitosa>",
 			});
 		}
 	} catch (error) {}
