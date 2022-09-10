@@ -612,12 +612,13 @@ const changeEmail = async (req, res = response) => {
 	const { id, email } = req.body;
 
 	try {
-		const findEmail = User.findOne({
+		const findEmail = await User.findOne({
 			where: {
 				email,
 			},
 		});
 
+		console.log(findEmail);
 		if (findEmail) {
 			res.status(500).json({
 				ok: false,
@@ -636,12 +637,15 @@ const changeEmail = async (req, res = response) => {
 			});
 
 			res.status(200).json({
-				ok: false,
-				message: "Actualizacion <exitosa>																																																																																																																																																																																																																																																																									</exitosa>",
+				ok: true,
+				message: "Actualizacion exitosa",
 			});
 		}
-	} catch (error) {}
+	} catch (error) {
+		console.log(error);
+	}
 };
+
 module.exports = {
 	createUser,
 	getUsersInactive,
@@ -654,4 +658,5 @@ module.exports = {
 	getUserforProfile,
 	changeName,
 	changePhone,
+	changeEmail,
 };

@@ -13,6 +13,7 @@ const {
 	getUserforProfile,
 	changeName,
 	changePhone,
+	changeEmail,
 } = require("../controllers/users");
 const { validarJWT } = require("../middlewares/validarjwt");
 
@@ -52,5 +53,7 @@ router.get("/profile", validarJWT, getUserforProfile);
 router.put("/profile/changeName", validarJWT, changeName);
 
 router.put("/profile/changePhone", validarJWT, changePhone);
+
+router.put("/profile/changeEmail", validarJWT, changeEmail);
 
 module.exports = router;
