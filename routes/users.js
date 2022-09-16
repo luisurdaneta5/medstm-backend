@@ -44,7 +44,7 @@ router.delete("/rejected/:id", validarJWT, setRejectUser);
 
 router.get("/all", validarJWT, getUsers);
 
-router.post("/change-password", validarJWT, ChangePassword);
+router.put("/change-password", validarJWT, ChangePassword);
 
 router.post("/upload/avatar", validarJWT, changeAvatar);
 

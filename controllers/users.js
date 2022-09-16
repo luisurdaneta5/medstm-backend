@@ -12,6 +12,7 @@ const mySpecialities = require("../models/mySpecialities");
 const Code = require("../models/codes");
 const random = require("string-random");
 const Balance = require("../models/balances");
+const socialNetwork = require("../models/socialNetwork");
 
 const createUser = async (req, res = response) => {
 	const { body } = req;
@@ -257,6 +258,13 @@ const setApproveUser = async (req, res = response) => {
 			}
 		);
 
+		const data = {
+			id: uuidv4(),
+			userId: id,
+		};
+
+		const socialNetwork = new socialNetwork(data);
+
 		res.status(200).json({
 			ok: true,
 			message: "Usuario aprobado correctamente",
@@ -339,26 +347,43 @@ const getUsers = async (req, res = response) => {
 };
 
 const ChangePassword = async (req, res = response) => {
-	const { id, password } = req.body;
-
+	const { id, newPassword, oldPassword } = req.body;
+	console.log("DATOS:", req.body);
 	try {
-		const salt = bcrypt.genSaltSync();
-		const hash = bcrypt.hashSync(password, salt);
-		await User.update(
-			{
-				password: hash,
+		const user = await User.findOne({
+			where: {
+				id,
 			},
-			{
-				where: {
-					id,
-				},
-			}
-		);
-		res.status(200).json({
-			ok: true,
-			message: "Contraseña cambiada correctamente",
 		});
-	} catch (error) {}
+
+		const validPassword = bcrypt.compareSync(oldPassword, user.password);
+
+		if (validPassword) {
+			const salt = bcrypt.genSaltSync();
+			const hash = bcrypt.hashSync(newPassword, salt);
+			await User.update(
+				{
+					password: hash,
+				},
+				{
+					where: {
+						id,
+					},
+				}
+			);
+			res.status(200).json({
+				ok: true,
+				message: "Su contraseña ha sido actualizada correctamente",
+			});
+		} else {
+			res.status(500).json({
+				ok: false,
+				message: "Contraseña actual no coincide",
+			});
+		}
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const changeAvatar = async (req, res = response) => {
