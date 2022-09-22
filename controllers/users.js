@@ -491,7 +491,7 @@ const getUserforProfile = async (req, res = response) => {
 				id,
 			},
 			attributes: {
-				exclude: ["id", "type", "updatedAt", "password"],
+				exclude: ["id", "updatedAt", "password"],
 			},
 			include: [
 				{

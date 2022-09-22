@@ -231,6 +231,37 @@ const getPlansVip = async (req, res = response) => {
 	}
 };
 
+const getPlansPayment = async (req, res = response) => {
+	const { type } = req.query;
+
+	try {
+		if (type == 4) {
+			const plans = await Plan.findAll({
+				where: {
+					name: [
+						"Basico",
+						"Bronce",
+						"Plata",
+						"Oro",
+						"Zafiro",
+						"Rubi",
+						"Esmeralda",
+						"Diamante",
+					],
+				},
+				attributes: {
+					exclude: ["id", "price_promotor", "percentage_promotor"],
+				},
+			});
+
+			res.status(200).json({
+				ok: true,
+				plans,
+			});
+		}
+	} catch (error) {}
+};
+
 module.exports = {
 	getCountries,
 	getCountUsers,
@@ -240,4 +271,5 @@ module.exports = {
 	getPlansFree,
 	getPlansPremiun,
 	getPlansVip,
+	getPlansPayment,
 };
