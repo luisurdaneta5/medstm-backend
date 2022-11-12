@@ -30,10 +30,10 @@ const updateSocialNetwork = async (req, res = response) => {
 	try {
 		await socialNetwork.update(
 			{
-				facebook: facebook,
-				instagram: instagram,
-				twitter: twitter,
-				linkedin: linkedin,
+				facebook: facebook.trim(),
+				instagram: instagram.trim(),
+				twitter: twitter.trim(),
+				linkedin: linkedin.trim(),
 			},
 			{
 				where: {

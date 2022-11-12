@@ -41,7 +41,6 @@ const createUser = async (req, res = response) => {
 		} else {
 			//Asignar el referido
 			if (code) {
-				console.log("PASO CON EL CODIGO");
 				const codeUser = await Code.findOne({
 					where: {
 						code,
@@ -261,9 +260,23 @@ const setApproveUser = async (req, res = response) => {
 		const data = {
 			id: uuidv4(),
 			userId: id,
+			facebook: "",
+			instagram: "",
+			twitter: "",
+			linkedin: "",
 		};
 
+		const balance = {
+			id: uuidv4(),
+			userId: id,
+			balance: 0,
+		};
+
+		const createBalance = new Balance(balance);
 		const socialNetwork = new socialNetwork(data);
+
+		createBalance.save();
+		socialNetwork.save();
 
 		res.status(200).json({
 			ok: true,
@@ -509,7 +522,7 @@ const getUserforProfile = async (req, res = response) => {
 				{
 					model: Withdrawal,
 					attributes: {
-						exclude: ["createdAt", "updatedAt"],
+						exclude: ["updatedAt"],
 					},
 				},
 				{
@@ -670,6 +683,8 @@ const changeEmail = async (req, res = response) => {
 		console.log(error);
 	}
 };
+
+//Dashboard
 
 module.exports = {
 	createUser,

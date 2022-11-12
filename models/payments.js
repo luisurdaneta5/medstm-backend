@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("./db");
 
-const Withdrawal = db.sequelize.define("withdrawals", {
+const Payment = db.sequelize.define("payments", {
 	id: {
 		type: DataTypes.STRING(255),
 		primaryKey: true,
@@ -9,15 +9,24 @@ const Withdrawal = db.sequelize.define("withdrawals", {
 	userId: {
 		type: DataTypes.STRING(255),
 	},
-	wallet: {
+	binanceUser: {
 		type: DataTypes.STRING(255),
+	},
+	transactionId: {
+		type: DataTypes.STRING(255),
+	},
+	paymentDate: {
+		type: DataTypes.DATE,
 	},
 	amount: {
 		type: DataTypes.FLOAT,
+	},
+	plan: {
+		type: DataTypes.STRING(60),
 	},
 	status: {
 		type: DataTypes.INTEGER,
 	},
 });
 
-module.exports = Withdrawal;
+module.exports = Payment;

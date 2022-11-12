@@ -250,6 +250,33 @@ const getPlansPayment = async (req, res = response) => {
 					],
 				},
 				attributes: {
+					exclude: [
+						"id",
+						"price_professional",
+						"percentage_professional",
+					],
+				},
+			});
+
+			res.status(200).json({
+				ok: true,
+				plans,
+			});
+		} else {
+			const plans = await Plan.findAll({
+				where: {
+					name: [
+						"Basico",
+						"Bronce",
+						"Plata",
+						"Oro",
+						"Zafiro",
+						"Rubi",
+						"Esmeralda",
+						"Diamante",
+					],
+				},
+				attributes: {
 					exclude: ["id", "price_promotor", "percentage_promotor"],
 				},
 			});
