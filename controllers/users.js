@@ -13,6 +13,7 @@ const Code = require("../models/codes");
 const random = require("string-random");
 const Balance = require("../models/balances");
 const socialNetwork = require("../models/socialNetwork");
+const { exit } = require("process");
 
 const createUser = async (req, res = response) => {
 	const { body } = req;
@@ -272,11 +273,20 @@ const setApproveUser = async (req, res = response) => {
 			balance: 0,
 		};
 
+		const avatar = {
+			id: uuidv4(),
+			userId: id,
+			type: 6,
+			url: "",
+		};
+
 		const createBalance = new Balance(balance);
 		const socialNetwork = new socialNetwork(data);
+		const createAvatar = new Document(avatar);
 
 		createBalance.save();
 		socialNetwork.save();
+		createAvatar.save();
 
 		res.status(200).json({
 			ok: true,
@@ -326,26 +336,32 @@ const getUsers = async (req, res = response) => {
 	const { type } = req.query;
 	try {
 		const users = await User.findAll({
-			attributes: {
-				exclude: [
-					"city",
-					"code_country",
-					"country",
-					"phone",
-					"email",
-					"type",
-					"password",
-					"createdAt",
-					"updatedAt",
-					"province",
-				],
-			},
 			where: {
 				type: type,
 				status: [1, 0],
 			},
+			include: [
+				{
+					model: Document,
+					attributes: {
+						exclude: ["userId", "createdAt", "updatedAt"],
+					},
+				},
+			],
+			attributes: {
+				exclude: [
+					"email",
+					"password",
+					"phone",
+					"country",
+					"province",
+					"city",
+					"country_code",
+				],
+			},
 		});
 
+		console.log(users);
 		res.status(200).json({
 			ok: true,
 			users,
@@ -685,6 +701,86 @@ const changeEmail = async (req, res = response) => {
 };
 
 //Dashboard
+const createUserAdmin = async (req, res = response) => {
+	const body = req.body;
+
+	console.log(body);
+	const { avatar } = req.files;
+
+	try {
+		let user = await User.findOne({
+			where: {
+				email: body.email,
+			},
+		});
+
+		if (user) {
+			res.status(500).json({
+				ok: false,
+				message: "Ya existe usuario con este correo electronico",
+			});
+		} else {
+			const salt = bcrypt.genSaltSync();
+			const hash = bcrypt.hashSync(body.password, salt);
+
+			user = new User({
+				...body,
+				plan: "Gratis",
+				password: hash,
+				status: 1,
+				id: uuidv4(),
+			});
+			await user.save();
+
+			const name_short = avatar.name.split(".");
+			const extension = name_short[name_short.length - 1];
+
+			const extensionsValids = ["png", "jpg", "jpeg", "gif"];
+
+			if (!extensionsValids.includes(extension)) {
+				res.status(400).json({
+					message: "Imagen no válida",
+				});
+			}
+
+			const temporalName = uuidv4() + "." + extension;
+
+			const uploadPath = path.join(
+				__dirname,
+				`../uploads/images/avatars/`,
+				temporalName
+			);
+
+			const data = {
+				id: uuidv4(),
+				userId: user.id,
+				type: 6,
+				url: process.env.URL_FILE + `/uploads/avatars/` + temporalName,
+			};
+
+			avatar.mv(uploadPath, (err) => {
+				if (err) {
+					console.log(err);
+				}
+
+				const document = new Document(data);
+				document.save();
+			});
+
+			res.status(200).json({
+				ok: true,
+				message: "Usuario creado exitosamente",
+			});
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const getUserForEdit = (req, res = response) => {
+	const { id } = req.query;
+	console.log(id);
+};
 
 module.exports = {
 	createUser,
@@ -699,4 +795,6 @@ module.exports = {
 	changeName,
 	changePhone,
 	changeEmail,
+	createUserAdmin,
+	getUserForEdit,
 };

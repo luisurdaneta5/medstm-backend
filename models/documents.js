@@ -13,7 +13,7 @@ const Document = db.sequelize.define("documents", {
 		type: DataTypes.INTEGER,
 	},
 	url: {
-		type: DataTypes.STRING(255),
+		type: DataTypes.TEXT,
 	},
 });
 
