@@ -6,6 +6,8 @@ const Address = require("./addresses");
 const mySpecialities = require("./mySpecialities");
 const Code = require("./codes");
 const Balance = require("./balances");
+const Payment = require("./payments");
+const socialNetwork = require("./socialNetwork");
 
 User.hasMany(Referral, {
 	foreignKey: "userId",
@@ -37,10 +39,12 @@ Address.belongsTo(User, {
 
 User.hasMany(mySpecialities, {
 	foreignKey: "userId",
+	as: "specialities",
 });
 
 mySpecialities.belongsTo(User, {
 	foreignKey: "userId",
+	as: "specialities",
 });
 
 User.hasOne(Code, {
@@ -57,4 +61,22 @@ User.hasOne(Balance, {
 
 Balance.belongsTo(User, {
 	foreignKey: "userId",
+});
+
+User.hasMany(Payment, {
+	foreignKey: "userId",
+});
+
+Payment.belongsTo(User, {
+	foreignKey: "userId",
+});
+
+User.hasOne(socialNetwork, {
+	foreignKey: "userId",
+	as: "rss",
+});
+
+socialNetwork.belongsTo(User, {
+	foreignKey: "userId",
+	as: "rss",
 });

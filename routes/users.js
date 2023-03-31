@@ -16,6 +16,7 @@ const {
 	changeEmail,
 	createUserAdmin,
 	getUserForEdit,
+	updateUser,
 } = require("../controllers/users");
 const { validarJWT } = require("../middlewares/validarjwt");
 
@@ -63,5 +64,7 @@ router.put("/profile/changeEmail", validarJWT, changeEmail);
 router.post("/dashboard/createUser", validarJWT, createUserAdmin);
 
 router.get("/dashboard/editUser", validarJWT, getUserForEdit);
+
+router.put("/dashboard/updateUser", validarJWT, updateUser);
 
 module.exports = router;

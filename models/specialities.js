@@ -9,6 +9,9 @@ const Speciality = db.sequelize.define("specialities", {
 	name: {
 		type: DataTypes.STRING(255),
 	},
+	code: {
+		type: DataTypes.STRING(255),
+	},
 	img: {
 		type: DataTypes.TEXT,
 	},

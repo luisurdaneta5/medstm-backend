@@ -44,6 +44,9 @@ const User = db.sequelize.define(
 		plan: {
 			type: DataTypes.STRING(255),
 		},
+		date_venciment: {
+			type: DataTypes.DATE(),
+		},
 	}
 	// { timestamps: false }
 );

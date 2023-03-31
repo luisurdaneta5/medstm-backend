@@ -240,8 +240,7 @@ const setApproveUser = async (req, res = response) => {
 
 	const salt = bcrypt.genSaltSync();
 
-	const characters =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	let password = Math.random().toString(36).substring(0, 8);
 
 	try {
@@ -349,19 +348,10 @@ const getUsers = async (req, res = response) => {
 				},
 			],
 			attributes: {
-				exclude: [
-					"email",
-					"password",
-					"phone",
-					"country",
-					"province",
-					"city",
-					"country_code",
-				],
+				exclude: ["email", "password", "phone", "country", "province", "city", "country_code"],
 			},
 		});
 
-		console.log(users);
 		res.status(200).json({
 			ok: true,
 			users,
@@ -434,11 +424,7 @@ const changeAvatar = async (req, res = response) => {
 
 	if (id) {
 		try {
-			const uploadPath = path.join(
-				__dirname,
-				`../uploads/images/avatars/`,
-				temporalName
-			);
+			const uploadPath = path.join(__dirname, `../uploads/images/avatars/`, temporalName);
 
 			image.mv(uploadPath, (err) => {
 				if (err) {
@@ -447,10 +433,7 @@ const changeAvatar = async (req, res = response) => {
 
 				Document.findOne(
 					{
-						url:
-							process.env.URL_FILE +
-							`/uploads/images/avatars/` +
-							temporalName,
+						url: process.env.URL_FILE + `/uploads/images/avatars/` + temporalName,
 					},
 					{
 						where: {
@@ -477,11 +460,7 @@ const changeAvatar = async (req, res = response) => {
 		}
 	} else {
 		try {
-			const uploadPath = path.join(
-				__dirname,
-				`../uploads/images/avatars/`,
-				temporalName
-			);
+			const uploadPath = path.join(__dirname, `../uploads/images/avatars/`, temporalName);
 
 			const data = {
 				id: uuidv4(),
@@ -557,12 +536,7 @@ const getUserforProfile = async (req, res = response) => {
 					model: Referral,
 
 					attributes: {
-						exclude: [
-							"referId",
-							"userId",
-							"createdAt",
-							"updatedAt",
-						],
+						exclude: ["referId", "userId", "createdAt", "updatedAt"],
 					},
 					include: [
 						{
@@ -676,8 +650,7 @@ const changeEmail = async (req, res = response) => {
 		if (findEmail) {
 			res.status(500).json({
 				ok: false,
-				message:
-					"Este correo ya esta registrado, porfavor intente con otro",
+				message: "Este correo ya esta registrado, porfavor intente con otro",
 			});
 		} else {
 			const user = await User.findOne({
@@ -703,9 +676,9 @@ const changeEmail = async (req, res = response) => {
 //Dashboard
 const createUserAdmin = async (req, res = response) => {
 	const body = req.body;
+	const { avatar } = req.files;
 
 	console.log(body);
-	const { avatar } = req.files;
 
 	try {
 		let user = await User.findOne({
@@ -713,7 +686,6 @@ const createUserAdmin = async (req, res = response) => {
 				email: body.email,
 			},
 		});
-
 		if (user) {
 			res.status(500).json({
 				ok: false,
@@ -722,7 +694,6 @@ const createUserAdmin = async (req, res = response) => {
 		} else {
 			const salt = bcrypt.genSaltSync();
 			const hash = bcrypt.hashSync(body.password, salt);
-
 			user = new User({
 				...body,
 				plan: "Gratis",
@@ -731,42 +702,29 @@ const createUserAdmin = async (req, res = response) => {
 				id: uuidv4(),
 			});
 			await user.save();
-
 			const name_short = avatar.name.split(".");
 			const extension = name_short[name_short.length - 1];
-
 			const extensionsValids = ["png", "jpg", "jpeg", "gif"];
-
 			if (!extensionsValids.includes(extension)) {
 				res.status(400).json({
 					message: "Imagen no válida",
 				});
 			}
-
 			const temporalName = uuidv4() + "." + extension;
-
-			const uploadPath = path.join(
-				__dirname,
-				`../uploads/images/avatars/`,
-				temporalName
-			);
-
+			const uploadPath = path.join(__dirname, `../uploads/images/avatars/`, temporalName);
 			const data = {
 				id: uuidv4(),
 				userId: user.id,
 				type: 6,
 				url: process.env.URL_FILE + `/uploads/avatars/` + temporalName,
 			};
-
 			avatar.mv(uploadPath, (err) => {
 				if (err) {
 					console.log(err);
 				}
-
 				const document = new Document(data);
 				document.save();
 			});
-
 			res.status(200).json({
 				ok: true,
 				message: "Usuario creado exitosamente",
@@ -777,9 +735,149 @@ const createUserAdmin = async (req, res = response) => {
 	}
 };
 
-const getUserForEdit = (req, res = response) => {
+const getUserForEdit = async (req, res = response) => {
 	const { id } = req.query;
 	console.log(id);
+
+	try {
+		const user = await User.findOne({
+			where: {
+				id: id,
+			},
+			attributes: {
+				exclude: ["password", "status", "plan", "createdAt", "updatedAt"],
+			},
+			include: {
+				model: Document,
+
+				where: {
+					userId: id,
+					type: 6,
+				},
+				attributes: {
+					exclude: ["userId", "type", "createdAt", "updatedAt"],
+				},
+			},
+		});
+
+		res.status(200).json({
+			ok: true,
+			user,
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const updateUser = async (req, res = response) => {
+	const body = req.body;
+	const avatar = req.files;
+
+	try {
+		const user = await User.findOne({
+			where: {
+				id: body.id,
+			},
+		});
+
+		if (body.password) {
+			const salt = bcrypt.genSaltSync();
+
+			const data = {
+				name: body.name,
+				lastname: body.lastname,
+				phone: body.phone,
+				email: body.email,
+				country: body.country,
+				country_code: body.country_code,
+				province: body.province,
+				city: body.city,
+				password: bcrypt.hashSync(body.password, salt),
+			};
+			user.update(data);
+		} else {
+			const data = {
+				name: body.name,
+				lastname: body.lastname,
+				phone: body.phone,
+				email: body.email,
+				country: body.country,
+				country_code: body.country_code,
+				province: body.province,
+				city: body.city,
+			};
+			user.update(data);
+		}
+
+		if (avatar) {
+			const found = await Document.findOne({
+				where: {
+					id: body.avatar_id,
+				},
+			});
+
+			if (found) {
+				const name_short = avatar.avatar.name.split(".");
+
+				const extension = name_short[name_short.length - 1];
+
+				const extensionsValids = ["png", "jpg", "jpeg", "gif"];
+
+				if (!extensionsValids.includes(extension)) {
+					res.status(400).json({
+						message: "Imagen no válida",
+					});
+				}
+
+				const temporalName = uuidv4() + "." + extension;
+
+				const uploadPath = path.join(__dirname, `../uploads/images/avatars/`, temporalName);
+
+				avatar.avatar.mv(uploadPath, (err) => {
+					if (err) {
+						console.log(err);
+					}
+
+					found.update({
+						url: process.env.URL_FILE + `/uploads/avatars/` + temporalName,
+					});
+
+					res.status(200).json({
+						ok: true,
+					});
+				});
+			} else {
+				const uploadPath = path.join(__dirname, `../uploads/images/avatars/`, temporalName);
+
+				const data = {
+					id: uuidv4(),
+					userId: user.id,
+					type: 6,
+					url: process.env.URL_FILE + `/uploads/avatars/` + temporalName,
+				};
+
+				avatar.mv(uploadPath, (err) => {
+					if (err) {
+						console.log(err);
+					}
+
+					const document = new Document(data);
+					document.save();
+
+					res.status(200).json({
+						ok: true,
+					});
+				});
+			}
+		}
+
+		res.status(200).json({
+			ok: true,
+			message: "Usuario Actualizado correctamente",
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 module.exports = {
@@ -797,4 +895,5 @@ module.exports = {
 	changeEmail,
 	createUserAdmin,
 	getUserForEdit,
+	updateUser,
 };

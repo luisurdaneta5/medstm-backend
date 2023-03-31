@@ -18,7 +18,7 @@ const validarJWT = (req, res = response, next) => {
 		req.name = name;
 		req.type = type;
 	} catch (error) {
-		console.log(error);
+		console.log("error JWT", error);
 		return res.status(401).json({
 			ok: false,
 			message: "Error al validar el token",

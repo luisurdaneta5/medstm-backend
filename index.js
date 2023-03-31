@@ -27,28 +27,16 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 //acceso a documentos
-app.use(
-	"/uploads/documents",
-	express.static(path.join(__dirname, "/uploads/documents"))
-);
+app.use("/uploads/documents", express.static(path.join(__dirname, "/uploads/documents")));
 
 //acceso a avatars
-app.use(
-	"/uploads/avatars",
-	express.static(path.join(__dirname, "/uploads/images/avatars"))
-);
+app.use("/uploads/avatars", express.static(path.join(__dirname, "/uploads/images/avatars")));
 
 //acceso a blogs
-app.use(
-	"/uploads/blog",
-	express.static(path.join(__dirname, "/uploads/images/blog"))
-);
+app.use("/uploads/blog", express.static(path.join(__dirname, "/uploads/images/blog")));
 
 //acceso a specialities
-app.use(
-	"/uploads/specialities",
-	express.static(path.join(__dirname, "/uploads/images/specialities"))
-);
+app.use("/uploads/specialities", express.static(path.join(__dirname, "/uploads/images/specialities")));
 
 app.use(express.json());
 app.use(
@@ -68,6 +56,7 @@ app.use("/api/address", require("./routes/addresses"));
 app.use("/api/social", require("./routes/socialNetwork"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/withdrawals", require("./routes/withdrawals"));
+app.use("/api/searchs", require("./routes/searchs"));
 
 app.listen(process.env.PORT, () => {
 	//Servidor
@@ -76,9 +65,7 @@ app.listen(process.env.PORT, () => {
 	sequelize
 		.authenticate()
 		.then(() => {
-			console.log(
-				"Connection to Database has been established successfully."
-			);
+			console.log("Connection to Database has been established successfully.");
 		})
 		.catch((err) => {
 			console.error("Unable to connect to the database:", err);

@@ -15,16 +15,13 @@ const CreateSpeciality = async (req, res = response) => {
 	const temporalName = uuidv4() + "." + extension;
 
 	try {
-		const uploadPath = path.join(
-			__dirname,
-			`../uploads/images/specialities/`,
-			temporalName
-		);
+		const uploadPath = path.join(__dirname, `../uploads/images/specialities/`, temporalName);
 
 		const data = {
 			...body,
 			id: uuidv4(),
-			img: process.env.URL_FILE + `/uploads/specialities` + temporalName,
+			code: body.name.toLowerCase(),
+			img: process.env.URL_FILE + `/uploads/specialities/` + temporalName,
 		};
 
 		image.mv(uploadPath, (err) => {
@@ -102,18 +99,12 @@ const UpdateSpeciality = async (req, res = response) => {
 
 			const temporalName = uuidv4() + "." + extension;
 
-			const uploadPath = path.join(
-				__dirname,
-				`../uploads/images/specialities/`,
-				temporalName
-			);
+			const uploadPath = path.join(__dirname, `../uploads/images/specialities/`, temporalName);
 
 			const data = {
 				...body,
-				img:
-					process.env.URL_FILE +
-					`/uploads/specialities` +
-					temporalName,
+				code: body.name.toLowerCase(),
+				img: process.env.URL_FILE + `/uploads/specialities/` + temporalName,
 			};
 
 			image.mv(uploadPath, (err) => {
@@ -124,8 +115,12 @@ const UpdateSpeciality = async (req, res = response) => {
 				speciality.update(data);
 			});
 		} else {
-			console.log("paso por no subir imagen s");
-			speciality.update(body);
+			const data = {
+				...body,
+				code: body.name.toLowerCase(),
+			};
+
+			speciality.update(data);
 		}
 
 		res.status(200).json({

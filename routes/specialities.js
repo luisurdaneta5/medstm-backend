@@ -1,20 +1,12 @@
 const express = require("express");
-const {
-	CreateSpeciality,
-	getSpecialities,
-	getSpeciality,
-	UpdateSpeciality,
-	DeleteSpeciality,
-	setSpecialityUser,
-	deleteSpecialityUser,
-} = require("../controllers/specialities");
+const { CreateSpeciality, getSpecialities, getSpeciality, UpdateSpeciality, DeleteSpeciality, setSpecialityUser, deleteSpecialityUser } = require("../controllers/specialities");
 const { validarJWT } = require("../middlewares/validarjwt");
 
 const router = express.Router();
 
-router.get("/", getSpeciality); //home
+router.get("/get", validarJWT, getSpecialities);
 
-router.get("/get", getSpecialities);
+router.get("/single/get", validarJWT, getSpeciality);
 
 router.post("/create", validarJWT, CreateSpeciality);
 
