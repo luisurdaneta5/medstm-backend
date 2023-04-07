@@ -41,7 +41,7 @@ const createUser = async (req, res = response) => {
 			});
 		} else {
 			//Asignar el referido
-			if (code) {
+			if (code != "") {
 				const codeUser = await Code.findOne({
 					where: {
 						code,
@@ -201,17 +201,7 @@ const getUserInactive = async (req, res = response) => {
 						{
 							model: User,
 							attributes: {
-								exclude: [
-									"city",
-									"country",
-									"country_code",
-									"email",
-									"password",
-									"phone",
-									"province",
-									"status",
-									"type",
-								],
+								exclude: ["city", "country", "country_code", "email", "password", "phone", "province", "status", "type"],
 							},
 							where: {
 								status: 1,
@@ -542,17 +532,7 @@ const getUserforProfile = async (req, res = response) => {
 						{
 							model: User,
 							attributes: {
-								exclude: [
-									"city",
-									"country",
-									"country_code",
-									"email",
-									"password",
-									"phone",
-									"province",
-									"status",
-									"type",
-								],
+								exclude: ["city", "country", "country_code", "email", "password", "phone", "province", "status", "type"],
 							},
 							where: {
 								status: 1,
