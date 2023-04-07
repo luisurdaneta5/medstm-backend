@@ -41,7 +41,7 @@ const createUser = async (req, res = response) => {
 			});
 		} else {
 			//Asignar el referido
-			if (code != "") {
+			if (code !== "") {
 				const codeUser = await Code.findOne({
 					where: {
 						code,
