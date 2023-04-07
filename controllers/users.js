@@ -16,8 +16,7 @@ const socialNetwork = require("../models/socialNetwork");
 const { exit } = require("process");
 
 const createUser = async (req, res = response) => {
-	const { body } = req;
-	const { code } = body;
+	const body = req.body;
 
 	let referralCode = random();
 
@@ -41,10 +40,10 @@ const createUser = async (req, res = response) => {
 			});
 		} else {
 			//Asignar el referido
-			if (code !== "") {
+			if (body.code != "") {
 				const codeUser = await Code.findOne({
 					where: {
-						code,
+						code: body.code,
 					},
 				});
 
